@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torchvision
-from encoder import VGG19, ResNet, DenseNet, efficientNet
+from .encoder import VGG19, ResNet, DenseNet
 
 class TableDecoder(nn.Module):
     def __init__(self, channels, kernels, strides):

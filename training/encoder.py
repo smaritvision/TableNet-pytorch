@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torchvision
-from efficientnet_pytorch import EfficientNet
+
 
 class VGG19(nn.Module):
     def __init__(self, pretrained = True, requires_grad = True):
@@ -82,78 +82,3 @@ class DenseNet(nn.Module):
         out_2 = self.densenet_out_2(out_1) #torch.Size([1, 512, 32, 32])
         out_3 = self.densenet_out_3(out_2) #torch.Size([1, 1024, 32, 32])
         return out_1, out_2, out_3
-
-class efficientNet_B0(nn.Module):
-    def __init__(self, pretrained = True, requires_grad = True):
-        super(efficientNet_B0, self).__init__()
-        eNet = EfficientNet.from_pretrained('efficientnet-b0')
-        
-        self.eNet_out_1 = torch.nn.Sequential()
-        self.eNet_out_2 = torch.nn.Sequential()
-        self.eNet_out_3 = torch.nn.Sequential()
-
-        blocks = eNet._blocks
-
-        self.eNet_out_1.add_module('_conv_stem', eNet._conv_stem)
-        self.eNet_out_1.add_module('_bn0', eNet._bn0)
-
-        for x in range(14):
-            self.eNet_out_1.add_module(str(x), blocks[x])
-        
-        self.eNet_out_2.add_module(str(14), blocks[14])
-        self.eNet_out_3.add_module(str(15), blocks[15])
-
-
-    def forward(self, x):
-        out_1 = self.eNet_out_1(x) #torch.Size([1, 192, 32, 32])
-        out_2 = self.eNet_out_2(out_1) #torch.Size([1, 192, 32, 32])
-        out_3 = self.eNet_out_3(out_2) #torch.Size([1, 320, 32, 32])
-        return out_1, out_2, out_3
-
-class efficientNet(nn.Module):
-    def __init__(self, model_type = 'efficientnet-b0',  pretrained = True, requires_grad = True):
-        super(efficientNet, self).__init__()
-        eNet = EfficientNet.from_pretrained(model_type)
-
-        self.eNet_out_1 = torch.nn.Sequential()
-        self.eNet_out_2 = torch.nn.Sequential()
-        self.eNet_out_3 = torch.nn.Sequential()
-
-        blocks = eNet._blocks
-
-        self.eNet_out_1.add_module('_conv_stem', eNet._conv_stem)
-        self.eNet_out_1.add_module('_bn0', eNet._bn0)
-
-        for x in range(len(blocks)-3):
-            self.eNet_out_1.add_module(str(x), blocks[x])
-        
-        self.eNet_out_2.add_module(str(len(blocks)-2), blocks[len(blocks)-2])
-        self.eNet_out_3.add_module(str(len(blocks)-1), blocks[len(blocks)-1])
-
-
-    def forward(self, x):
-        out_1 = self.eNet_out_1(x) #torch.Size([1, 192, 32, 32])
-        out_2 = self.eNet_out_2(out_1) #torch.Size([1, 192, 32, 32])
-        out_3 = self.eNet_out_3(out_2) #torch.Size([1, 320, 32, 32])
-        
-
-        """
-        shapes of b1
-        torch.Size([1, 192, 32, 32])
-        torch.Size([1, 320, 32, 32])
-        torch.Size([1, 320, 32, 32])
-
-        shapes of b2
-        torch.Size([1, 208, 32, 32])
-        torch.Size([1, 352, 32, 32])
-        torch.Size([1, 352, 32, 32])
-        """
-
-        return out_1, out_2, out_3
-
-
-
-if __name__ == '__main__':
-    model = efficientNet()
-    x = torch.randn(1,3,1024,1024)
-    model(x)
