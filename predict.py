@@ -1,17 +1,16 @@
+from datetime import datetime
+from io import StringIO
+
+import albumentations as A
+import cv2
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from PIL import Image
-import matplotlib.pyplot as plt
-import cv2
-import time
-from datetime import datetime
-import torch
-import torch.nn as nn
-import torchvision
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
 import pytesseract
-from io import StringIO
+import torch
+from PIL import Image
+from albumentations.pytorch import ToTensorV2
+
 from training.model import TableNet
 
 pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
